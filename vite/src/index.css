@@ -1,0 +1,109 @@
+@import "tailwindcss";
+
+/* 自定义 CSS 变量 */
+:root {
+  --bg-primary: #fdfdfd;
+  --bg-secondary: #fff;
+  --bg-sidebar: #2c3e50;
+  --bg-sidebar-header: #1a252f;
+  --bg-nav-category: #3498db;
+  --bg-table-header: #f8f9fa;
+  --bg-table-even: #fcfcfc;
+  --bg-table-hover: #f1f1f1;
+  --bg-code-example: #f6f8fa;
+  --bg-search: white;
+  --bg-search-hover: #f5f5f5;
+  --bg-highlight: #fff3cd;
+  --text-primary: #2c3e50;
+  --text-secondary: #333;
+  --text-muted: #666;
+  --text-code: #d63384;
+  --text-code-example: #0969da;
+  --text-sidebar: #ecf0f1;
+  --text-sidebar-link: #bdc3c7;
+  --border-color: #e0e0e0;
+  --border-sidebar: #34495e;
+  --scrollbar-thumb: #ccc;
+  --scrollbar-track: #f1f1f1;
+}
+
+/* 暗黑主题 */
+html.dark {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-sidebar: #0f0f23;
+  --bg-sidebar-header: #0a0a1a;
+  --bg-nav-category: #1e3a5f;
+  --bg-table-header: #1e2a3a;
+  --bg-table-even: #1a2535;
+  --bg-table-hover: #243447;
+  --bg-code-example: #1e2a3a;
+  --bg-search: #16213e;
+  --bg-search-hover: #1e2a3a;
+  --bg-highlight: #3d3d00;
+  --text-primary: #e8e8e8;
+  --text-secondary: #d0d0d0;
+  --text-muted: #a0a0a0;
+  --text-code: #ff79c6;
+  --text-code-example: #8be9fd;
+  --text-sidebar: #e0e0e0;
+  --text-sidebar-link: #a0a0a0;
+  --border-color: #2a3a4a;
+  --border-sidebar: #1e2a3a;
+  --scrollbar-thumb: #4a5a6a;
+  --scrollbar-track: #1a2535;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+/* 复制动画 */
+@keyframes cellCopied {
+  0% {
+    background: var(--bg-table-hover);
+  }
+
+  50% {
+    background: #27ae60;
+  }
+
+  100% {
+    background: var(--bg-table-hover);
+  }
+}
+
+.copied {
+  animation: cellCopied 0.3s ease;
+}
