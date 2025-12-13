@@ -82,16 +82,24 @@
 
         /* Sidebar */
         .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            height: 100vh;
             width: 300px;
             background: var(--bg-sidebar);
             color: var(--text-sidebar);
-            flex-shrink: 0;
             overflow-y: auto;
             border-right: 1px solid var(--border-sidebar);
             display: flex;
             flex-direction: column;
             -webkit-overflow-scrolling: touch;
-            transition: background-color 0.3s;
+            transition: left 0.3s ease, background-color 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar.open {
+            left: 0;
         }
 
         .sidebar-header {
@@ -190,6 +198,7 @@
         .main-content {
             flex: 1;
             padding: 40px;
+            padding-left: 60px;
             overflow-y: auto;
             background: var(--bg-primary);
             scroll-behavior: smooth;
@@ -213,19 +222,47 @@
             color: var(--text-primary);
             font-size: 1.5rem;
             transition: color 0.3s;
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 10;
+            margin-top: 0;
+            padding-top: 10px;
         }
 
-        /* Table Container for horizontal scroll */
+        /* 遮挡上方穿透内容 */
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: -100vw;
+            right: -100vw;
+            top: -100px;
+            height: 100px;
+            background: var(--bg-primary);
+            z-index: -1;
+        }
+
+        /* 遮挡左右两侧溢出内容 */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: -100vw;
+            width: calc(100vw - 20px);
+            top: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: -1;
+        }
+
+        /* Table Container for horizontal scroll - 桌面端不启用，保持thead sticky */
         .table-container {
             width: 100%;
-            overflow-x: auto;
-            overflow-y: visible;
+            /* 桌面端不设置overflow，让thead sticky正常工作 */
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
             touch-action: pan-x pan-y;
             position: relative;
-            will-change: scroll-position;
         }
 
         .table-container::-webkit-scrollbar {
@@ -244,7 +281,8 @@
         /* Tables */
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-bottom: 20px;
             font-size: 0.95rem;
         }
@@ -256,6 +294,12 @@
             text-align: left;
             vertical-align: top;
             transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        thead {
+            position: sticky;
+            top: 48px;
+            z-index: 5;
         }
 
         th {
@@ -288,6 +332,7 @@
             padding: 2px 4px;
             border-radius: 3px;
             transition: color 0.3s, background-color 0.3s;
+            word-break: break-all;
         }
 
         /* Back to top */
@@ -424,6 +469,181 @@
             border-bottom: none;
         }
 
+        /* Settings Toggle Button */
+        .settings-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .settings-toggle:hover {
+            opacity: 1;
+        }
+
+        .settings-toggle svg {
+            width: 18px;
+            height: 18px;
+            fill: #3498db;
+            transition: fill 0.3s;
+        }
+
+        /* Settings Modal */
+        .settings-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .settings-modal-overlay.active {
+            display: flex;
+        }
+
+        .settings-modal {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .settings-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .settings-modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .settings-modal h3 {
+            margin: 0 0 20px 0;
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+
+        .settings-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+
+        .settings-option-label {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        .settings-option-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .settings-radio-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .settings-radio {
+            display: none;
+        }
+
+        .settings-radio-label {
+            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+
+        .settings-radio:checked+.settings-radio-label {
+            background: #3498db;
+            border-color: #3498db;
+            color: white;
+        }
+
+        /* Copy Toast Notification */
+        .copy-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 3000;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .copy-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Copyable Cell Styles */
+        td.copyable-cell {
+            cursor: pointer;
+            position: relative;
+        }
+
+        td.copyable-cell:hover {
+            background: var(--bg-table-hover);
+        }
+
+        td.copyable-cell.copied {
+            animation: cellCopied 0.3s ease;
+        }
+
+        @keyframes cellCopied {
+            0% {
+                background: var(--bg-table-hover);
+            }
+
+            50% {
+                background: #27ae60;
+            }
+
+            100% {
+                background: var(--bg-table-hover);
+            }
+        }
+
         /* Theme Toggle Button - 放在搜索框左侧 */
         .theme-toggle {
             background: transparent;
@@ -549,9 +769,9 @@
             border-radius: 2px;
         }
 
-        /* Mobile Menu Toggle */
+        /* Menu Toggle - 始终显示 */
         .menu-toggle {
-            display: none;
+            display: block;
             position: fixed;
             top: 15px;
             left: 15px;
@@ -584,26 +804,8 @@
                 font-size: 18px;
             }
 
-            .menu-toggle {
-                display: block;
-            }
-
             .sidebar {
-                position: fixed;
-                top: 0;
-                left: -320px;
-                height: 100vh;
                 width: 280px;
-                z-index: 1000;
-                transition: left 0.3s ease, background-color 0.3s;
-            }
-
-            .sidebar.open {
-                left: 0;
-            }
-
-            .sidebar-overlay.active {
-                display: block;
             }
 
             .sidebar-header h2 {
@@ -623,7 +825,7 @@
             .section-block {
                 padding: 15px;
                 margin-bottom: 40px;
-                overflow: hidden;
+                overflow: visible;
             }
 
             .section-title {
@@ -646,7 +848,7 @@
             .table-container {
                 display: block;
                 overflow-x: auto;
-                overflow-y: visible;
+                /* 移动端启用水平滚动，thead sticky会失效 */
                 -webkit-overflow-scrolling: touch;
                 overscroll-behavior-x: contain;
                 scroll-snap-type: none;
@@ -833,6 +1035,189 @@
                     document.body.style.overflow = '';
                 }
             });
+
+            // Settings Modal toggle
+            var settingsToggle = document.getElementById('settingsToggle');
+            var settingsModalOverlay = document.getElementById('settingsModalOverlay');
+            var settingsModalClose = document.getElementById('settingsModalClose');
+            var copyModeRadios = document.querySelectorAll('input[name="copyMode"]');
+            var copyToast = document.getElementById('copyToast');
+
+            // 从localStorage读取复制模式设置
+            var savedCopyMode = localStorage.getItem('wiki-copy-mode') || 'click';
+            document.querySelector('input[name="copyMode"][value="' + savedCopyMode + '"]').checked = true;
+
+            settingsToggle.addEventListener('click', function () {
+                settingsModalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            settingsModalClose.addEventListener('click', function () {
+                settingsModalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            settingsModalOverlay.addEventListener('click', function (e) {
+                if (e.target === settingsModalOverlay) {
+                    settingsModalOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // 保存复制模式设置
+            copyModeRadios.forEach(function (radio) {
+                radio.addEventListener('change', function () {
+                    localStorage.setItem('wiki-copy-mode', this.value);
+                });
+            });
+
+            // 复制提示函数
+            function showCopyToast(message) {
+                copyToast.textContent = message || '已复制到剪贴板';
+                copyToast.classList.add('show');
+                setTimeout(function () {
+                    copyToast.classList.remove('show');
+                }, 2000);
+            }
+
+            // 复制到剪贴板函数
+            function copyToClipboard(text, cell) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(text).then(function () {
+                        showCopyToast();
+                        cell.classList.add('copied');
+                        setTimeout(function () {
+                            cell.classList.remove('copied');
+                        }, 300);
+                    }).catch(function () {
+                        fallbackCopy(text, cell);
+                    });
+                } else {
+                    fallbackCopy(text, cell);
+                }
+            }
+
+            // 备用复制方法（兼容旧浏览器）
+            function fallbackCopy(text, cell) {
+                var textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-9999px';
+                textArea.style.top = '-9999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopyToast();
+                    cell.classList.add('copied');
+                    setTimeout(function () {
+                        cell.classList.remove('copied');
+                    }, 300);
+                } catch (err) {
+                    showCopyToast('复制失败');
+                }
+                document.body.removeChild(textArea);
+            }
+
+            // 单元格复制功能
+            function initCellCopy() {
+                var allCells = document.querySelectorAll('td');
+                var longPressTimer = null;
+                var longPressTriggered = false;
+                var LONG_PRESS_DURATION = 500; // 长按时间阈值（毫秒）
+
+                allCells.forEach(function (cell) {
+                    cell.classList.add('copyable-cell');
+
+                    // 获取当前复制模式
+                    function getCopyMode() {
+                        return localStorage.getItem('wiki-copy-mode') || 'click';
+                    }
+
+                    // 处理复制
+                    function handleCopy() {
+                        var text = cell.textContent.trim();
+                        if (text) {
+                            copyToClipboard(text, cell);
+                        }
+                    }
+
+                    // 单击事件
+                    cell.addEventListener('click', function (e) {
+                        if (getCopyMode() === 'click' && !longPressTriggered) {
+                            handleCopy();
+                        }
+                        longPressTriggered = false;
+                    });
+
+                    // 触摸开始（移动端长按）
+                    cell.addEventListener('touchstart', function (e) {
+                        if (getCopyMode() === 'longpress') {
+                            longPressTriggered = false;
+                            longPressTimer = setTimeout(function () {
+                                longPressTriggered = true;
+                                handleCopy();
+                            }, LONG_PRESS_DURATION);
+                        }
+                    }, { passive: true });
+
+                    // 触摸结束
+                    cell.addEventListener('touchend', function (e) {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+                    });
+
+                    // 触摸取消
+                    cell.addEventListener('touchcancel', function (e) {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+                        longPressTriggered = false;
+                    });
+
+                    // 触摸移动（取消长按）
+                    cell.addEventListener('touchmove', function (e) {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+                    }, { passive: true });
+
+                    // 鼠标按下（电脑端长按）
+                    cell.addEventListener('mousedown', function (e) {
+                        if (getCopyMode() === 'longpress') {
+                            longPressTriggered = false;
+                            longPressTimer = setTimeout(function () {
+                                longPressTriggered = true;
+                                handleCopy();
+                            }, LONG_PRESS_DURATION);
+                        }
+                    });
+
+                    // 鼠标松开
+                    cell.addEventListener('mouseup', function (e) {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+                    });
+
+                    // 鼠标离开
+                    cell.addEventListener('mouseleave', function (e) {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+                    });
+                });
+            }
+
+            // 初始化单元格复制功能
+            initCellCopy();
 
             // 导航栏一级分类折叠/展开功能
             var navCategories = document.querySelectorAll('.nav-category');
@@ -1113,6 +1498,12 @@
 
     <!-- Search Container -->
     <div class="search-container">
+        <button class="settings-toggle" id="settingsToggle" title="复制设置">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+            </svg>
+        </button>
         <button class="info-toggle" id="infoToggle" title="代码表信息">
             <svg viewBox="0 0 24 24">
                 <path
@@ -1159,6 +1550,29 @@
             </div>
         </div>
     </div>
+
+    <!-- Settings Modal -->
+    <div class="settings-modal-overlay" id="settingsModalOverlay">
+        <div class="settings-modal">
+            <button class="settings-modal-close" id="settingsModalClose">&times;</button>
+            <h3>复制设置</h3>
+            <div class="settings-option">
+                <div>
+                    <div class="settings-option-label">单元格复制触发方式</div>
+                    <div class="settings-option-desc">选择如何触发复制功能</div>
+                </div>
+                <div class="settings-radio-group">
+                    <input type="radio" name="copyMode" id="copyModeClick" value="click" class="settings-radio" checked>
+                    <label for="copyModeClick" class="settings-radio-label">单击</label>
+                    <input type="radio" name="copyMode" id="copyModeLongPress" value="longpress" class="settings-radio">
+                    <label for="copyModeLongPress" class="settings-radio-label">长按</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copy Toast -->
+    <div class="copy-toast" id="copyToast">已复制到剪贴板</div>
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -6362,10 +6776,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th width="15%">代码</th>
-                        <th width="10%">翻译</th>
+                        <th width="7%">代码</th>
+                        <th width="8%">翻译</th>
                         <th width="35%">描述</th>
-                        <th width="25%">例子</th>
+                        <th width="35%">例子</th>
                         <th width="15%">值类型</th>
                     </tr>
                 </thead>
@@ -8119,7 +8533,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th width="15%">代码</th>
+                        <th width="7%">代码</th>
                         <th width="10%">翻译</th>
                         <th width="35%">描述</th>
                         <th width="25%">例子</th>
