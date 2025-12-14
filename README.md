@@ -1,16 +1,18 @@
-# React + Vite
+铁锈战争 Wiki 代码参考手册
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+技术栈：Vite + React + Tailwind CSS
 
-Currently, two official plugins are available:
+此代码表由“洛铭（改天再说）”（1980316694）自己拆包游戏代码
+以及自行在网络渠道上搜索和参考其他代码表以及教程收集总结制作而成。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+感谢：大家对代码表的错误进行改正。
+群：319198864，上限为1000人
 
-## React Compiler
+此代码表为NDT-v1.15（正式版1.3.1.3）（2025.4.18）
+本人会不定期更新代码表，可能是小优化，也可能是大更新。
+如有问题，可以向作者反映（1980316694），谢谢！
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+代码表内部依然可能有重复，错误等问题；也可能还会有没来得及测试的新代码；作者并不建议你去看那些未知的代码
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+遵循 CC BY-NC-SA 4.0 协议
+ https://creativecommons.org/licenses/by-nc-sa/4.0/
