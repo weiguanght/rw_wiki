@@ -25,6 +25,12 @@ export function SettingsModal() {
         return localStorage.getItem('wiki-card-expanded') !== 'false';
     });
 
+    // 表格列自动宽度
+    const [autoColumnWidth, setAutoColumnWidth] = useState(() => {
+        if (typeof window === 'undefined') return false;
+        return localStorage.getItem('wiki-auto-column-width') === 'true';
+    });
+
     useEffect(() => {
         localStorage.setItem('wiki-copy-mode', copyMode);
     }, [copyMode]);
@@ -38,6 +44,11 @@ export function SettingsModal() {
         localStorage.setItem('wiki-card-expanded', String(cardExpanded));
         triggerSettingsChange();
     }, [cardExpanded]);
+
+    useEffect(() => {
+        localStorage.setItem('wiki-auto-column-width', String(autoColumnWidth));
+        triggerSettingsChange();
+    }, [autoColumnWidth]);
 
     return (
         <>
@@ -112,11 +123,22 @@ export function SettingsModal() {
                         <SettingItem
                             title="卡片默认展开"
                             description="关闭后卡片只显示名称和翻译，可手动展开"
-                            noBorder
                         >
                             <ToggleSwitch
                                 checked={cardExpanded}
                                 onChange={setCardExpanded}
+                            />
+                        </SettingItem>
+
+                        {/* 设置项4: 表格列自动宽度 */}
+                        <SettingItem
+                            title="表格列自动宽度"
+                            description="根据内容自动计算列宽占比，移除异常长数据"
+                            noBorder
+                        >
+                            <ToggleSwitch
+                                checked={autoColumnWidth}
+                                onChange={setAutoColumnWidth}
                             />
                         </SettingItem>
                     </div>
