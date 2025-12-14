@@ -58,6 +58,38 @@ html.dark {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* 主题切换过渡 - 针对主要容器和文字元素设置过渡，避免通配符性能问题 */
+html.theme-transitioning,
+html.theme-transitioning body,
+html.theme-transitioning #root,
+html.theme-transitioning main,
+html.theme-transitioning aside,
+html.theme-transitioning header,
+html.theme-transitioning section,
+html.theme-transitioning table,
+html.theme-transitioning th,
+html.theme-transitioning td,
+html.theme-transitioning div,
+html.theme-transitioning input,
+html.theme-transitioning button,
+html.theme-transitioning span,
+html.theme-transitioning p,
+html.theme-transitioning h1,
+html.theme-transitioning h2,
+html.theme-transitioning h3,
+html.theme-transitioning h4,
+html.theme-transitioning h5,
+html.theme-transitioning h6,
+html.theme-transitioning a,
+html.theme-transitioning li,
+html.theme-transitioning ul,
+html.theme-transitioning small {
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 html,
 body,
 #root {
@@ -70,8 +102,10 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
+  will-change: background-color, color;
 }
 
 /* 滚动条样式 */

@@ -11,10 +11,10 @@ export function InfoModal() {
             {/* 触发按钮 */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="p-1 opacity-70 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none"
+                className="w-[50px] h-[50px] flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none"
                 title="代码表信息"
             >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#3498db">
+                <svg className="w-[30px] h-[30px]" viewBox="0 0 24 24" fill="#3498db">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                 </svg>
             </button>
@@ -99,3 +99,5 @@ export function InfoModal() {
         </>
     );
 }
+
+export default InfoModal;

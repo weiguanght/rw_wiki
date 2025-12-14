@@ -32,28 +32,40 @@ export function Sidebar({ navigation, onNavigate }) {
             {/* 汉堡菜单按钮 - 正方形 */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="fixed top-4 left-4 z-[1001] w-11 h-11 flex items-center justify-center rounded-lg shadow-lg transition-colors cursor-pointer text-lg"
-                style={{ background: 'var(--bg-sidebar)', color: 'white' }}
+                className="fixed top-[20px] left-[20px] z-[1001] w-10 h-10 flex flex-col items-center justify-center gap-[5px] rounded-lg shadow-lg cursor-pointer"
+                style={{
+                    background: 'var(--bg-sidebar)',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                }}
             >
-                ☰
+                <span className="block w-[18px] h-[2px] bg-white rounded-sm"></span>
+                <span className="block w-[18px] h-[2px] bg-white rounded-sm"></span>
+                <span className="block w-[18px] h-[2px] bg-white rounded-sm"></span>
             </button>
 
-            {/* 遮罩层 */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-[999]"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
+            {/* 遮罩层 - 使用 opacity 过渡替代条件渲染 */}
+            <div
+                className="fixed inset-0 z-[999]"
+                onClick={() => setIsOpen(false)}
+                style={{
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    opacity: isOpen ? 1 : 0,
+                    pointerEvents: isOpen ? 'auto' : 'none',
+                    transition: 'opacity 0.3s ease',
+                    willChange: 'opacity'
+                }}
+            />
 
-            {/* 侧边栏 */}
+            {/* 侧边栏 - 使用 transform 替代 left 实现 GPU 加速 */}
             <aside
-                className={`fixed top-0 h-screen w-[300px] z-[1000] overflow-y-auto transition-[left] duration-300 ${isOpen ? 'left-0' : 'left-[-320px]'
-                    }`}
+                className="fixed top-0 left-0 h-screen w-[300px] z-[1000] overflow-y-auto"
                 style={{
                     background: 'var(--bg-sidebar)',
                     color: 'var(--text-sidebar)',
-                    borderRight: '1px solid var(--border-sidebar)'
+                    borderRight: '1px solid var(--border-sidebar)',
+                    transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+                    transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    willChange: 'transform'
                 }}
             >
                 {/* 头部 */}

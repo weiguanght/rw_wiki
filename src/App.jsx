@@ -1,16 +1,32 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, Suspense, lazy } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { DesktopTable } from './components/DesktopTable';
 import { MobileCardList } from './components/MobileCardList';
 import { SearchBar } from './components/SearchBar';
 import { ThemeToggle } from './components/ThemeToggle';
-import { InfoModal } from './components/InfoModal';
-import { SettingsModal } from './components/SettingsModal';
 import { CopyToast, BackToTop } from './components/Utilities';
 import { useResponsiveLayout } from './hooks/useResponsiveLayout';
 import { useTheme } from './hooks/useTheme';
 import { useCopyToClipboard } from './hooks/useCopyToClipboard';
-import data from './data/data.json';
+
+// 懒加载模态框组件
+const InfoModal = lazy(() => import('./components/InfoModal'));
+const SettingsModal = lazy(() => import('./components/SettingsModal'));
+
+// 加载骨架屏组件
+function LoadingSkeleton() {
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
+      <div className="text-center">
+        <div
+          className="w-12 h-12 border-4 rounded-full animate-spin mx-auto mb-4"
+          style={{ borderColor: '#3498db', borderTopColor: 'transparent' }}
+        />
+        <p style={{ color: 'var(--text-muted)' }}>加载中...</p>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const { useCardView, columns } = useResponsiveLayout();
@@ -18,6 +34,18 @@ function App() {
   const { copied } = useCopyToClipboard();
   const mainContentRef = useRef(null);
   const [activeSectionId, setActiveSectionId] = useState(null);
+
+  // 异步加载数据
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('./data/data.json')
+      .then(res => res.json())
+      .then(setData)
+      .catch(err => console.error('Failed to load data:', err))
+      .finally(() => setLoading(false));
+  }, []);
 
   // 导航到指定 section
   const handleNavigate = (sectionId) => {
@@ -28,15 +56,28 @@ function App() {
     }
   };
 
+  // 加载状态显示骨架屏
+  if (loading || !data) {
+    return <LoadingSkeleton />;
+  }
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
       {/* 侧边栏 */}
       <Sidebar navigation={data.navigation} onNavigate={handleNavigate} />
 
+      {/* 顶部遮挡层 - 防止内容穿透 */}
+      <div
+        className="fixed top-0 left-0 right-0 h-[60px] z-[999]"
+        style={{ background: 'var(--bg-primary)' }}
+      />
+
       {/* 顶部工具栏 */}
       <div className="fixed top-3 right-4 z-[1000] flex items-center gap-2">
-        <SettingsModal />
-        <InfoModal />
+        <Suspense fallback={null}>
+          <SettingsModal />
+          <InfoModal />
+        </Suspense>
         <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
         <SearchBar sections={data.sections} onNavigate={handleNavigate} />
       </div>
@@ -44,7 +85,7 @@ function App() {
       {/* 主内容区 - 使用自然页面滚动 */}
       <main
         ref={mainContentRef}
-        className="min-h-screen pt-20 pb-10 px-4 pl-16 md:px-10 md:pl-20"
+        className="min-h-screen pt-20 pb-10 px-4 md:px-10"
         style={{
           background: 'var(--bg-primary)',
           scrollBehavior: 'smooth',
@@ -63,7 +104,7 @@ function App() {
           >
             {/* 章节标题 - sticky */}
             <h3
-              className="sticky top-0 z-10 m-0 py-2.5 mb-5 text-xl md:text-2xl font-semibold"
+              className="sticky top-[60px] z-10 m-0 py-2.5 mb-5 text-xl md:text-2xl font-semibold"
               style={{
                 background: 'var(--bg-secondary)',
                 color: 'var(--text-primary)',
@@ -93,3 +134,4 @@ function App() {
 }
 
 export default App;
+
